@@ -1,0 +1,22 @@
+filebeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: false
+
+processors:
+  - add_docker_metadata: ~
+
+output.logstash:
+  hosts: "${LOGSTASH_HOSTS}"
+  index: "filebeat-%{[agent.version]}-clearing-pdc-%{+yyyy-MM-dd}"
+  loadbalance: true
+  indices:
+    - index: "filebeat-%{[agent.version]}-clearing-pdc-httpd-%{+yyyy-MM-dd}"
+      when.equals:
+        event.module: "apache"
+
+setup.template:
+  name: 'filebeat'
+  pattern: 'filebeat-*'
+  enabled: false
+
+setup.ilm.enabled: false
