@@ -26,7 +26,7 @@ services:
         soft: -1
         hard: -1
     networks:
-      - elasticsearch
+      - elasticsearch-stack
   es02:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.7.0
     container_name: es02
@@ -52,7 +52,7 @@ services:
         soft: -1
         hard: -1
     networks:
-      - elasticsearch
+      - elasticsearch-stack
   es03:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.7.0
     container_name: es03
@@ -78,7 +78,7 @@ services:
         soft: -1
         hard: -1
     networks:
-      - elasticsearch
+      - elasticsearch-stack
   es04:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.7.0
     container_name: es04
@@ -104,7 +104,7 @@ services:
         soft: -1
         hard: -1
     networks:
-      - elasticsearch
+      - elasticsearch-stack
     depends_on:
       - es01
       - es02
@@ -134,7 +134,7 @@ services:
         soft: -1
         hard: -1
     networks:
-      - elasticsearch
+      - elasticsearch-stack
     depends_on:
       - es01
       - es02
@@ -164,7 +164,7 @@ services:
         soft: -1
         hard: -1
     networks:
-      - elasticsearch
+      - elasticsearch-stack
     depends_on:
       - es01
       - es02
@@ -194,7 +194,7 @@ services:
         soft: -1
         hard: -1
     networks:
-      - elasticsearch
+      - elasticsearch-stack
     depends_on:
       - es01
       - es02
@@ -224,7 +224,7 @@ services:
         soft: -1
         hard: -1
     networks:
-      - elasticsearch
+      - elasticsearch-stack
     depends_on:
       - es01
       - es02
@@ -254,7 +254,7 @@ services:
         soft: -1
         hard: -1
     networks:
-      - elasticsearch
+      - elasticsearch-stack
     depends_on:
       - es01
       - es02
@@ -284,7 +284,7 @@ services:
         soft: -1
         hard: -1
     networks:
-      - elasticsearch
+      - elasticsearch-stack
     depends_on:
       - es01
       - es02
@@ -314,7 +314,7 @@ services:
         soft: -1
         hard: -1
     networks:
-      - elasticsearch
+      - elasticsearch-stack
     depends_on:
       - es01
       - es02
@@ -344,7 +344,7 @@ services:
         soft: -1
         hard: -1
     networks:
-      - elasticsearch
+      - elasticsearch-stack
     depends_on:
       - es01
       - es02
@@ -374,7 +374,7 @@ services:
         soft: -1
         hard: -1
     networks:
-      - elasticsearch
+      - elasticsearch-stack
     depends_on:
       - es01
       - es02
@@ -404,7 +404,7 @@ services:
         soft: -1
         hard: -1
     networks:
-      - elasticsearch
+      - elasticsearch-stack
     depends_on:
       - es01
       - es02
@@ -434,7 +434,7 @@ services:
         soft: -1
         hard: -1
     networks:
-      - elasticsearch
+      - elasticsearch-stack
     depends_on:
       - es01
       - es02
@@ -464,7 +464,7 @@ services:
         soft: -1
         hard: -1
     networks:
-      - elasticsearch
+      - elasticsearch-stack
     depends_on:
       - es01
       - es02
@@ -494,7 +494,7 @@ services:
         soft: -1
         hard: -1
     networks:
-      - elasticsearch
+      - elasticsearch-stack
     depends_on:
       - es01
       - es02
@@ -524,7 +524,7 @@ services:
         soft: -1
         hard: -1
     networks:
-      - elasticsearch
+      - elasticsearch-stack
     depends_on:
       - es01
       - es02
@@ -554,7 +554,7 @@ services:
         soft: -1
         hard: -1
     networks:
-      - elasticsearch
+      - elasticsearch-stack
     depends_on:
       - es01
       - es02
@@ -584,7 +584,7 @@ services:
         soft: -1
         hard: -1
     networks:
-      - elasticsearch
+      - elasticsearch-stack
     depends_on:
       - es01
       - es02
@@ -614,7 +614,7 @@ services:
         soft: -1
         hard: -1
     networks:
-      - elasticsearch
+      - elasticsearch-stack
     depends_on:
       - es01
       - es02
@@ -623,7 +623,7 @@ services:
     image: docker.elastic.co/logstash/logstash:7.7.0
     container_name: ls01-shipper
     networks:
-      - elasticsearch
+      - elasticsearch-stack
     volumes:
       - ./files/logstash-shipper/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
       - ./files/logstash-shipper/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
@@ -631,35 +631,35 @@ services:
       - kafka01
       - kafka02
       - kafka03
-  ls02-shipper:
-    image: docker.elastic.co/logstash/logstash:7.7.0
-    container_name: ls02-shipper
-    networks:
-      - elasticsearch
-    volumes:
-      - ./files/logstash-shipper/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
-      - ./files/logstash-shipper/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
-    depends_on:
-      - kafka01
-      - kafka02
-      - kafka03
-  ls03-shipper:
-    image: docker.elastic.co/logstash/logstash:7.7.0
-    container_name: ls03-shipper
-    networks:
-      - elasticsearch
-    volumes:
-      - ./files/logstash-shipper/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
-      - ./files/logstash-shipper/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
-    depends_on:
-      - kafka01
-      - kafka02
-      - kafka03
+#  ls02-shipper:
+#    image: docker.elastic.co/logstash/logstash:7.7.0
+#    container_name: ls02-shipper
+#    networks:
+#      - elasticsearch-stack
+#    volumes:
+#      - ./files/logstash-shipper/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+#      - ./files/logstash-shipper/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+#    depends_on:
+#      - kafka01
+#      - kafka02
+#      - kafka03
+#  ls03-shipper:
+#    image: docker.elastic.co/logstash/logstash:7.7.0
+#    container_name: ls03-shipper
+#    networks:
+#      - elasticsearch-stack
+#    volumes:
+#      - ./files/logstash-shipper/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+#      - ./files/logstash-shipper/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+#    depends_on:
+#      - kafka01
+#      - kafka02
+#      - kafka03
   ls01-indexer:
     image: docker.elastic.co/logstash/logstash:7.7.0
     container_name: ls01-indexer
     networks:
-      - elasticsearch
+      - elasticsearch-stack
     volumes:
       - ./files/logstash-indexer/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
       - ./files/logstash-indexer/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
@@ -670,36 +670,36 @@ services:
       - kafka01
       - kafka02
       - kafka03
-  ls02-indexer:
-    image: docker.elastic.co/logstash/logstash:7.7.0
-    container_name: ls02-indexer
-    networks:
-      - elasticsearch
-    volumes:
-      - ./files/logstash-indexer/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
-      - ./files/logstash-indexer/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
-    depends_on:
-      - es04
-      - es05
-      - es06
-      - kafka01
-      - kafka02
-      - kafka03
-  ls03-indexer:
-    image: docker.elastic.co/logstash/logstash:7.7.0
-    container_name: ls03-indexer
-    networks:
-      - elasticsearch
-    volumes:
-      - ./files/logstash-indexer/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
-      - ./files/logstash-indexer/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
-    depends_on:
-      - es04
-      - es05
-      - es06
-      - kafka01
-      - kafka02
-      - kafka03
+#  ls02-indexer:
+#    image: docker.elastic.co/logstash/logstash:7.7.0
+#    container_name: ls02-indexer
+#    networks:
+#      - elasticsearch-stack
+#    volumes:
+#      - ./files/logstash-indexer/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+#      - ./files/logstash-indexer/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+#    depends_on:
+#      - es04
+#      - es05
+#      - es06
+#      - kafka01
+#      - kafka02
+#      - kafka03
+#  ls03-indexer:
+#    image: docker.elastic.co/logstash/logstash:7.7.0
+#    container_name: ls03-indexer
+#    networks:
+#      - elasticsearch-stack
+#    volumes:
+#      - ./files/logstash-indexer/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+#      - ./files/logstash-indexer/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+#    depends_on:
+#      - es04
+#      - es05
+#      - es06
+#      - kafka01
+#      - kafka02
+#      - kafka03
   zoo01:
     image: zookeeper:3.6.1
     container_name: zoo01
@@ -707,32 +707,32 @@ services:
       MYID: 1
       SERVERS: zoo01,zoo02,zoo03
     networks:
-      - elasticsearch
+      - elasticsearch-stack
     volumes:
       - zookeeper01-data:/data:rw
       - zookeeper01-logs:/logs:rw
-  zoo02:
-    image: zookeeper:3.6.1
-    container_name: zoo02
-    environment:
-      MYID: 1
-      SERVERS: zoo01,zoo02,zoo03
-    networks:
-      - elasticsearch
-    volumes:
-      - zookeeper02-data:/data:rw
-      - zookeeper02-logs:/logs:rw
-  zoo03:
-    image: zookeeper:3.6.1
-    container_name: zoo03
-    environment:
-      MYID: 1
-      SERVERS: zoo01,zoo02,zoo03
-    networks:
-      - elasticsearch
-    volumes:
-      - zookeeper03-data:/data:rw
-      - zookeeper03-logs:/logs:rw
+#  zoo02:
+#    image: zookeeper:3.6.1
+#    container_name: zoo02
+#    environment:
+#      MYID: 1
+#      SERVERS: zoo01,zoo02,zoo03
+#    networks:
+#      - elasticsearch-stack
+#    volumes:
+#      - zookeeper02-data:/data:rw
+#      - zookeeper02-logs:/logs:rw
+#  zoo03:
+#    image: zookeeper:3.6.1
+#    container_name: zoo03
+#    environment:
+#      MYID: 1
+#      SERVERS: zoo01,zoo02,zoo03
+#    networks:
+#      - elasticsearch-stack
+#    volumes:
+#      - zookeeper03-data:/data:rw
+#      - zookeeper03-logs:/logs:rw
   kafka01:
     image: wurstmeister/kafka:2.12-2.5.0
     container_name: kafka01
@@ -749,59 +749,59 @@ services:
       KAFKA_LOG_DIRS: /kafka/logs
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'
     networks:
-      - elasticsearch
+      - elasticsearch-stack
     volumes:
       - ./kafka01-logs:/kafka/logs:rw
     depends_on:
       - zoo01
       - zoo02
       - zoo03
-  kafka02:
-    image: wurstmeister/kafka:2.12-2.5.0
-    container_name: kafka02
-    environment:
-      KAFKA_BROKER_ID: 2
-      KAFKA_LISTENERS: PLAINTEXT://kafka02:9092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka02:9092
-      KAFKA_ADVERTISED_HOST_NAME: kafka02
-      KAFKA_ADVERTISED_PORT: 9092
-      KAFKA_LOG_RETENTION_HOURS: "24"
-      KAFKA_LOG_RETENTION_BYTES: "10240000"
-      KAFKA_ZOOKEEPER_CONNECT:  zoo01:2181,zoo02:2181,zoo03:2181
-      KAFKA_CREATE_TOPICS: "logs:3:3"
-      KAFKA_LOG_DIRS: /kafka/logs
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'
-    networks:
-      - elasticsearch
-    volumes:
-      - ./kafka02-logs:/kafka/logs:rw
-    depends_on:
-      - zoo01
-      - zoo02
-      - zoo03
-  kafka03:
-    image: wurstmeister/kafka:2.12-2.5.0
-    container_name: kafka03
-    environment:
-      KAFKA_BROKER_ID: 3
-      KAFKA_LISTENERS: PLAINTEXT://kafka03:9092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka03:9092
-      KAFKA_ADVERTISED_HOST_NAME: kafka03
-      KAFKA_ADVERTISED_PORT: 9092
-      KAFKA_LOG_RETENTION_HOURS: "24"
-      KAFKA_LOG_RETENTION_BYTES: "10240000"
-      KAFKA_ZOOKEEPER_CONNECT:  zoo01:2181,zoo02:2181,zoo03:2181
-      KAFKA_CREATE_TOPICS: "logs:3:3"
-      KAFKA_LOG_DIRS: /kafka/logs
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'
-    networks:
-      - elasticsearch
-    volumes:
-      - ./kafka03-logs:/kafka/logs:rw
-    depends_on:
-      - zoo01
-      - zoo02
-      - zoo03
+#  kafka02:
+#    image: wurstmeister/kafka:2.12-2.5.0
+#    container_name: kafka02
+#    environment:
+#      KAFKA_BROKER_ID: 2
+#      KAFKA_LISTENERS: PLAINTEXT://kafka02:9092
+#      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka02:9092
+#      KAFKA_ADVERTISED_HOST_NAME: kafka02
+#      KAFKA_ADVERTISED_PORT: 9092
+#      KAFKA_LOG_RETENTION_HOURS: "24"
+#      KAFKA_LOG_RETENTION_BYTES: "10240000"
+#      KAFKA_ZOOKEEPER_CONNECT:  zoo01:2181,zoo02:2181,zoo03:2181
+#      KAFKA_CREATE_TOPICS: "logs:3:3"
+#      KAFKA_LOG_DIRS: /kafka/logs
+#      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'
+#    networks:
+#      - elasticsearch-stack
+#    volumes:
+#      - ./kafka02-logs:/kafka/logs:rw
+#    depends_on:
+#      - zoo01
+#      - zoo02
+#      - zoo03
+#  kafka03:
+#    image: wurstmeister/kafka:2.12-2.5.0
+#    container_name: kafka03
+#    environment:
+#      KAFKA_BROKER_ID: 3
+#      KAFKA_LISTENERS: PLAINTEXT://kafka03:9092
+#      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka03:9092
+#      KAFKA_ADVERTISED_HOST_NAME: kafka03
+#      KAFKA_ADVERTISED_PORT: 9092
+#      KAFKA_LOG_RETENTION_HOURS: "24"
+#      KAFKA_LOG_RETENTION_BYTES: "10240000"
+#      KAFKA_ZOOKEEPER_CONNECT:  zoo01:2181,zoo02:2181,zoo03:2181
+#      KAFKA_CREATE_TOPICS: "logs:3:3"
+#      KAFKA_LOG_DIRS: /kafka/logs
+#      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'
+#    networks:
+#      - elasticsearch-stack
+#    volumes:
+#      - ./kafka03-logs:/kafka/logs:rw
+#    depends_on:
+#      - zoo01
+#      - zoo02
+#      - zoo03
   kibana:
     image: docker.elastic.co/kibana/kibana:7.7.0
     container_name: kibana
@@ -810,7 +810,7 @@ services:
       SERVER_HOST: kibana
       ELASTICSEARCH_HOSTS: '["http://es10:9200","http://es11:9200","http://es12:9200"]'
     networks:
-      - elasticsearch
+      - elasticsearch-stack
     depends_on:
       - es10
       - es11
@@ -826,29 +826,29 @@ services:
       - httpd01-volume:/var/log/apache2:ro
     command: ["--strict.perms=false"]
     networks:
-      - elasticsearch
+      - elasticsearch-stack
     depends_on:
       - ls01-shipper
       - ls02-shipper
       - ls03-shipper
       - httpd01
-  fb02:
-    image: docker.elastic.co/beats/filebeat:7.7.0
-    container_name: fb02
-    environment:
-      LOGSTASH_HOSTS: '["ls01-shipper:5044","ls02-shipper:5044","ls03-shipper:5044"]'
-    volumes:
-      - ./files/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
-      - ./files/filebeat/modules.d/apache.yml:/usr/share/filebeat/modules.d/apache.yml:ro
-      - httpd02-volume:/var/log/apache2:ro
-    command: ["--strict.perms=false"]
-    networks:
-      - elasticsearch
-    depends_on:
-      - ls01-shipper
-      - ls02-shipper
-      - ls03-shipper
-      - httpd02
+#  fb02:
+#    image: docker.elastic.co/beats/filebeat:7.7.0
+#    container_name: fb02
+#    environment:
+#      LOGSTASH_HOSTS: '["ls01-shipper:5044","ls02-shipper:5044","ls03-shipper:5044"]'
+#    volumes:
+#      - ./files/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+#      - ./files/filebeat/modules.d/apache.yml:/usr/share/filebeat/modules.d/apache.yml:ro
+#      - httpd02-volume:/var/log/apache2:ro
+#    command: ["--strict.perms=false"]
+#    networks:
+#      - elasticsearch-stack
+#    depends_on:
+#      - ls01-shipper
+#      - ls02-shipper
+#      - ls03-shipper
+#      - httpd02
   httpd01:
     image: httpd:2.4.43
     container_name: httpd01
@@ -856,17 +856,17 @@ services:
       - httpd01-volume:/var/log/apache2
       - ./files/httpd/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
     networks:
-      - elasticsearch
-  httpd02:
-    image: httpd:2.4.43
-    container_name: httpd02
-    volumes:
-      - httpd02-volume:/var/log/apache2
-      - ./files/httpd/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
-    networks:
-      - elasticsearch
+      - elasticsearch-stack
+#  httpd02:
+#    image: httpd:2.4.43
+#    container_name: httpd02
+#    volumes:
+#      - httpd02-volume:/var/log/apache2
+#      - ./files/httpd/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
+#    networks:
+#      - elasticsearch-stack
 networks:
-  elasticsearch:
+  elasticsearch-stack:
     ipam:
       config:
         - subnet: 172.20.15.0/24
