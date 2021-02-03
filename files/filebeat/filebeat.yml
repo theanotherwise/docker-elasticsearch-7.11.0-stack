@@ -1,22 +1,28 @@
-filebeat.config.modules:
-  path: ${path.config}/modules.d/*.yml
-  reload.enabled: false
+filebeat.inputs:
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/apache2/access.log
+    fields:
+      env_name: "example"
+      env_type: "production"
+      env_group: "frontend"
+      env_app: "apache2"
+      env_log: "access-log"
+    fields_under_root: true
 
-processors:
-  - add_docker_metadata: ~
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/apache2/error.log
+    fields:
+      env_name: "example"
+      env_type: "production"
+      env_group: "frontend"
+      env_app: "apache2"
+      env_log: "error-log"
+    fields_under_root: true
 
 output.logstash:
-  hosts: "${LOGSTASH_HOSTS}"
-  index: "filebeat-%{[agent.version]}-clearing-pdc-%{+yyyy-MM-dd}"
+  hosts: ["ls01-shipper:5044"]
   loadbalance: true
-  indices:
-    - index: "filebeat-%{[agent.version]}-clearing-pdc-httpd-%{+yyyy-MM-dd}"
-      when.equals:
-        event.module: "apache"
-
-setup.template:
-  name: 'filebeat'
-  pattern: 'filebeat-*'
-  enabled: false
-
-setup.ilm.enabled: false

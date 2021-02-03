@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   es01: # Master
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.3
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
     container_name: es01
     environment:
       - node.name=es01
@@ -28,7 +28,7 @@ services:
     networks:
       - elasticsearch-stack
   es02: # Master
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.3
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
     container_name: es02
     environment:
       - node.name=es02
@@ -54,7 +54,7 @@ services:
     networks:
       - elasticsearch-stack
   es03: # Data
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.3
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
     container_name: es03
     environment:
       - node.name=es03
@@ -83,7 +83,7 @@ services:
       - es01
       - es02
   es04: # Ingest
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.3
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
     container_name: es04
     environment:
       - node.name=es04
@@ -112,7 +112,7 @@ services:
       - es01
       - es02
   es05: # Coordinating Only
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.3
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
     container_name: es05
     environment:
       - node.name=es05
@@ -141,7 +141,7 @@ services:
       - es01
       - es02
   es06: # Transform
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.3
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
     container_name: es06
     environment:
       - node.name=es06
@@ -170,7 +170,7 @@ services:
       - es01
       - es02
   es07: # Machine Learning
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.3
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
     container_name: es07
     environment:
       - node.name=es07
@@ -199,7 +199,7 @@ services:
       - es01
       - es02
   es08: # Voting Only
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.3
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
     container_name: es08
     environment:
       - node.name=es08
@@ -227,63 +227,6 @@ services:
     depends_on:
       - es01
       - es02
-  ls01-shipper:
-    image: docker.elastic.co/logstash/logstash:7.9.3
-    container_name: ls01-shipper
-    networks:
-      - elasticsearch-stack
-    volumes:
-      - ./files/logstash-shipper/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
-      - ./files/logstash-shipper/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
-  ls01-indexer:
-    image: docker.elastic.co/logstash/logstash:7.9.3
-    container_name: ls01-indexer
-    networks:
-      - elasticsearch-stack
-    volumes:
-      - ./files/logstash-indexer/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
-      - ./files/logstash-indexer/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
-  kibana:
-    image: docker.elastic.co/kibana/kibana:7.9.3
-    container_name: kibana
-    environment:
-      SERVER_NAME: kibana
-      SERVER_HOST: kibana
-      ELASTICSEARCH_HOSTS: '["http://es05:9200"]'
-    networks:
-      - elasticsearch-stack
-    depends_on:
-      - es05
-  fb01:
-    image: docker.elastic.co/beats/filebeat:7.9.3
-    container_name: fb01
-    environment:
-      LOGSTASH_HOSTS: '["ls01-shipper:5044","ls02-shipper:5044","ls03-shipper:5044"]'
-    volumes:
-      - ./files/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
-      - ./files/filebeat/modules.d/apache.yml:/usr/share/filebeat/modules.d/apache.yml:ro
-      - httpd01-volume:/var/log/apache2:ro
-    command: ["--strict.perms=false"]
-    networks:
-      - elasticsearch-stack
-    depends_on:
-      - ls01-shipper
-      - httpd01
-  fb02:
-    image: docker.elastic.co/beats/filebeat:7.9.3
-    container_name: fb02
-    environment:
-      LOGSTASH_HOSTS: '["ls01-shipper:5044","ls02-shipper:5044","ls03-shipper:5044"]'
-    volumes:
-      - ./files/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
-      - ./files/filebeat/modules.d/apache.yml:/usr/share/filebeat/modules.d/apache.yml:ro
-      - httpd02-volume:/var/log/apache2:ro
-    command: ["--strict.perms=false"]
-    networks:
-      - elasticsearch-stack
-    depends_on:
-      - ls01-shipper
-      - httpd02
   httpd01:
     image: httpd:2.4.43
     container_name: httpd01
@@ -292,27 +235,83 @@ services:
       - ./files/httpd/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
     networks:
       - elasticsearch-stack
-  httpd02:
-    image: httpd:2.4.43
-    container_name: httpd02
+  fb01:
+    image: docker.elastic.co/beats/filebeat:7.10.1
+    container_name: fb01
+    environment:
+      LOGSTASH_HOSTS: '["ls01-shipper:5044","ls02-shipper:5044","ls03-shipper:5044"]'
     volumes:
-      - httpd02-volume:/var/log/apache2
-      - ./files/httpd/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
+      - ./files/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - httpd01-volume:/var/log/apache2:ro
+    command: ["--strict.perms=false"]
     networks:
       - elasticsearch-stack
+    depends_on:
+      - httpd01
+      - ls01-shipper
+  ls01-shipper:
+    image: docker.elastic.co/logstash/logstash:7.10.1
+    container_name: ls01-shipper
+    networks:
+      - elasticsearch-stack
+    volumes:
+      - ./files/logstash-shipper/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+      - ./files/logstash-shipper/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+    depends_on:
+      - kafka01
+  zoo01:
+    image: zookeeper:3.6.2
+    container_name: zoo01
+    environment:
+      MYID: 1
+      SERVERS: zoo01
+    networks:
+      - elasticsearch-stack
+  kafka01:
+    image: wurstmeister/kafka:2.13-2.7.0
+    container_name: kafka01
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_LISTENERS: PLAINTEXT://kafka01:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka01:9092
+      KAFKA_ADVERTISED_HOST_NAME: kafka01
+      KAFKA_ADVERTISED_PORT: 9092
+      KAFKA_LOG_RETENTION_HOURS: "24"
+      KAFKA_LOG_RETENTION_BYTES: "10240000"
+      KAFKA_ZOOKEEPER_CONNECT: zoo01:2181
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+    networks:
+      - elasticsearch-stack
+    depends_on:
+      - zoo01
+  ls01-indexer:
+    image: docker.elastic.co/logstash/logstash:7.10.1
+    container_name: ls01-indexer
+    networks:
+      - elasticsearch-stack
+    volumes:
+      - ./files/logstash-indexer/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+      - ./files/logstash-indexer/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+    depends_on:
+      - kafka01
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.10.1
+    container_name: kibana
+    environment:
+      SERVER_NAME: kibana
+      SERVER_HOST: kibana
+      ELASTICSEARCH_HOSTS: '["http://es05:9200"]'
+    networks:
+      - elasticsearch-stack
+    ports:
+      - "5601:5601"
+    depends_on:
+      - es05
 networks:
   elasticsearch-stack:
     ipam:
       config:
         - subnet: 172.20.15.0/24
+
 volumes:
   httpd01-volume:
-  httpd02-volume:
-  httpd03-volume:
-  httpd04-volume:
-  zookeeper01-data:
-  zookeeper01-logs:
-  zookeeper02-data:
-  zookeeper02-logs:
-  zookeeper03-data:
-  zookeeper03-logs:
