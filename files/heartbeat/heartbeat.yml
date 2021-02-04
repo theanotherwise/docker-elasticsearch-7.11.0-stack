@@ -1,6 +1,6 @@
 heartbeat.monitors:
   - type: icmp
-    schedule: '@every 5s'
+    schedule: '@every 60s'
     hosts:
       - wp.pl
     wait: 1s
@@ -9,10 +9,9 @@ heartbeat.monitors:
     fields_under_root: true
 
   - type: http
-    schedule: '@every 10s'
+    schedule: '@every 60s'
     hosts:
       - http://wp.pl
-      - https://wp.pl
     timeout: 3s
     check.request:
       method: GET
