@@ -1,0 +1,24 @@
+heartbeat.monitors:
+  - type: icmp
+    schedule: '@every 5s'
+    hosts:
+      - wp.pl
+    wait: 1s
+    ipv6: false
+    tags: [ "1001" ]
+    fields_under_root: true
+
+  - type: http
+    schedule: '@every 10s'
+    hosts:
+      - http://wp.pl
+      - https://wp.pl
+    timeout: 3s
+    check.request:
+      method: GET
+    tags: [ "1002" ]
+    fields_under_root: true
+
+output.logstash:
+  hosts: ["ls01-shipper:5044"]
+  loadbalance: true

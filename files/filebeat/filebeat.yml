@@ -3,24 +3,14 @@ filebeat.inputs:
     enabled: true
     paths:
       - /var/log/apache2/access.log
-    fields:
-      env_name: "example"
-      env_type: "production"
-      env_group: "frontend"
-      env_app: "apache2"
-      env_log: "access-log"
+    tags: [ "1001" ]
     fields_under_root: true
 
   - type: log
     enabled: true
     paths:
       - /var/log/apache2/error.log
-    fields:
-      env_name: "example"
-      env_type: "production"
-      env_group: "frontend"
-      env_app: "apache2"
-      env_log: "error-log"
+    tags: [ "1002" ]
     fields_under_root: true
 
 output.logstash:
