@@ -4,14 +4,12 @@ filebeat.inputs:
     paths:
       - /var/log/apache2/access.log
     tags: [ "1001" ]
-    fields_under_root: true
 
   - type: log
     enabled: true
     paths:
       - /var/log/apache2/error.log
     tags: [ "1002" ]
-    fields_under_root: true
 
 output.logstash:
   hosts: ["ls01-shipper:5044"]

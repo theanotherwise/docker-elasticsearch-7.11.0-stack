@@ -1,0 +1,15 @@
+packetbeat.interfaces.device: any
+
+packetbeat.protocols:
+  - type: dns
+    enabled: true
+    ports: [ 53 ]
+    include_authorities: true
+    include_additionals: true
+    send_request: true
+    send_response: true
+    tags: [ "1001" ]
+
+output.logstash:
+  hosts: ["ls01-shipper:5044"]
+  loadbalance: true

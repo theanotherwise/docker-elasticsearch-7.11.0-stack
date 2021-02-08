@@ -1,0 +1,16 @@
+metricbeat.modules:
+  - module: system
+    enabled: true
+    metricsets:
+      - cpu
+      - load
+      - memory
+      - network
+      - process
+      - uptime
+    period: 10s
+    tags: [ "1001" ]
+
+output.logstash:
+  hosts: ["ls01-shipper:5044"]
+  loadbalance: true

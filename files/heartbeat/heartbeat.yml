@@ -1,14 +1,15 @@
 heartbeat.monitors:
   - type: icmp
+    enabled: true
     schedule: '@every 60s'
     hosts:
       - wp.pl
     wait: 1s
     ipv6: false
     tags: [ "1001" ]
-    fields_under_root: true
 
   - type: http
+    enabled: true
     schedule: '@every 60s'
     hosts:
       - http://wp.pl
@@ -16,7 +17,6 @@ heartbeat.monitors:
     check.request:
       method: GET
     tags: [ "1002" ]
-    fields_under_root: true
 
 output.logstash:
   hosts: ["ls01-shipper:5044"]

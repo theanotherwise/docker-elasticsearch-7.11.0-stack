@@ -1,0 +1,15 @@
+auditbeat.modules:
+  - module: file_integrity
+    enabled: true
+    paths:
+      - /etc
+    scan_at_start: true
+    scan_rate_per_sec: 50 MiB
+    max_file_size: 100 MiB
+    hash_types: [md5]
+    recursive: false
+    tags: [ "1001" ]
+
+output.logstash:
+  hosts: ["ls01-shipper:5044"]
+  loadbalance: true

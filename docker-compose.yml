@@ -235,6 +235,38 @@ services:
       - ./files/httpd/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
     networks:
       - elasticsearch-stack
+  ab01:
+    image: docker.elastic.co/beats/auditbeat:7.10.1
+    container_name: ab01
+    volumes:
+      - ./files/auditbeat/auditbeat.yml:/usr/share/auditbeat/auditbeat.yml:ro
+    command: [ "--strict.perms=false" ]
+    networks:
+      - elasticsearch-stack
+    depends_on:
+      - ls01-shipper
+  mb01:
+    image: docker.elastic.co/beats/metricbeat:7.10.1
+    container_name: mb01
+    volumes:
+      - ./files/metricbeat/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml:ro
+    command: [ "--strict.perms=false" ]
+    networks:
+      - elasticsearch-stack
+    depends_on:
+      - ls01-shipper
+  pb01:
+    image: docker.elastic.co/beats/packetbeat:7.10.1
+    container_name: pb01
+    volumes:
+      - ./files/packetbeat/packetbeat.yml:/usr/share/packetbeat/packetbeat.yml:ro
+    command: [ "--strict.perms=false"]
+    cap_add:
+      - NET_ADMIN
+    networks:
+      - elasticsearch-stack
+    depends_on:
+      - ls01-shipper
   fb01:
     image: docker.elastic.co/beats/filebeat:7.10.1
     container_name: fb01
