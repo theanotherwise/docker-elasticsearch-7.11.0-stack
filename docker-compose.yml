@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.9'
 
 services:
   es01: # Master
@@ -347,11 +347,26 @@ services:
       - "5601:5601"
     depends_on:
       - es05
+  apm01:
+    image: docker.elastic.co/apm/apm-server:7.10.1
+    container_name: apm01
+    networks:
+      - elasticsearch-stack
+    volumes:
+      - ./files/apm-server/apm-server.yml:/usr/share/apm-server/apm-server.yml:ro
+  fastapi01:
+    image: python:3.9.1-alpine
+    container_name: fastapi01
+    build:
+      context: ./fastapi01
+    networks:
+      - elasticsearch-stack
+    ports:
+      - "8080:8080"
 networks:
   elasticsearch-stack:
     ipam:
       config:
         - subnet: 172.20.15.0/24
-
 volumes:
   httpd01-volume:

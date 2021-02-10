@@ -1,0 +1,8 @@
+apm-server:
+  host: "0.0.0.0:8200"
+  rum:
+    enabled: true
+
+output.logstash:
+  hosts: ["ls01-shipper:5044"]
+  loadbalance: true
