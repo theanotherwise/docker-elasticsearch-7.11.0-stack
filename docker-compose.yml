@@ -153,12 +153,48 @@ services:
 # C O M B I N E D
 #
 ####################################################################
-  es02-combined02: # Data Content, Data Hot, Data Warm, Data Cold
+#  es02-combined02: # Data Content, Data Hot, Data Warm, Data Cold
+#    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
+#    container_name: es02-combined02
+#    environment:
+#      - node.name=es02-combined02
+#      - node.roles=data_content,data_hot,data_warm,data_cold
+#      - cluster.name=cluster
+#      - discovery.seed_hosts=es01-master01,es01-master02
+#      - cluster.initial_master_nodes=es01-master01,es01-master02
+#      - bootstrap.memory_lock=true
+#      - xpack.ml.enabled=true
+#      - xpack.monitoring.collection.enabled=true
+#      - path.repo=/usr/share/elasticsearch/repository
+#      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+#      - TAKE_FILE_OWNERSHIP=true
+#    entrypoint: >
+#      /bin/sh -c "
+#        sed -i \"s/{data,logs}/{data,logs,repository}/g\" /usr/local/bin/docker-entrypoint.sh
+#        /bin/tini -- /usr/local/bin/docker-entrypoint.sh"
+#    ulimits:
+#      memlock:
+#        soft: -1
+#        hard: -1
+#    volumes:
+#      - es02-combined02-data:/usr/share/elasticsearch/data
+#      - es-data-repository:/usr/share/elasticsearch/repository
+#    networks:
+#      - elasticsearch-stack
+#    depends_on:
+#      - es01-master01
+#      - es01-master02
+####################################################################
+#
+# S E P A R A T E D
+#
+####################################################################
+  es02-data04: # Data Content
     image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
-    container_name: es02-combined02
+    container_name: es02-data04
     environment:
-      - node.name=es02-combined02
-      - node.roles=data_content,data_hot,data_warm,data_cold
+      - node.name=es02-data04
+      - node.roles=data_content
       - cluster.name=cluster
       - discovery.seed_hosts=es01-master01,es01-master02
       - cluster.initial_master_nodes=es01-master01,es01-master02
@@ -177,142 +213,106 @@ services:
         soft: -1
         hard: -1
     volumes:
-      - es02-combined02-data:/usr/share/elasticsearch/data
+      - es02-data04-data:/usr/share/elasticsearch/data
       - es-data-repository:/usr/share/elasticsearch/repository
     networks:
       - elasticsearch-stack
     depends_on:
       - es01-master01
       - es01-master02
-####################################################################
-#
-# S E P A R A T E D
-#
-####################################################################
-#  es02-data04: # Data Content
-#    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
-#    container_name: es02-data04
-#    environment:
-#      - node.name=es02-data04
-#      - node.roles=data_content
-#      - cluster.name=cluster
-#      - discovery.seed_hosts=es01-master01,es01-master02
-#      - cluster.initial_master_nodes=es01-master01,es01-master02
-#      - bootstrap.memory_lock=true
-#      - xpack.ml.enabled=true
-#      - xpack.monitoring.collection.enabled=true
-#      - path.repo=/usr/share/elasticsearch/repository
-#      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-#      - TAKE_FILE_OWNERSHIP=true
-#    entrypoint: >
-#      /bin/sh -c "
-#        sed -i \"s/{data,logs}/{data,logs,repository}/g\" /usr/local/bin/docker-entrypoint.sh
-#        /bin/tini -- /usr/local/bin/docker-entrypoint.sh"
-#    ulimits:
-#      memlock:
-#        soft: -1
-#        hard: -1
-#    volumes:
-#      - es02-data04-data:/usr/share/elasticsearch/data
-#      - es-data-repository:/usr/share/elasticsearch/repository
-#    networks:
-#      - elasticsearch-stack
-#    depends_on:
-#      - es01-master01
-#      - es01-master02
-#  es02-data05: # Data Hot
-#    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
-#    container_name: es02-data05
-#    environment:
-#      - node.name=es02-data05
-#      - node.roles=data_hot
-#      - cluster.name=cluster
-#      - discovery.seed_hosts=es01-master01,es01-master02
-#      - cluster.initial_master_nodes=es01-master01,es01-master02
-#      - bootstrap.memory_lock=true
-#      - xpack.ml.enabled=true
-#      - xpack.monitoring.collection.enabled=true
-#      - path.repo=/usr/share/elasticsearch/repository
-#      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-#      - TAKE_FILE_OWNERSHIP=true
-#    entrypoint: >
-#      /bin/sh -c "
-#        sed -i \"s/{data,logs}/{data,logs,repository}/g\" /usr/local/bin/docker-entrypoint.sh
-#        /bin/tini -- /usr/local/bin/docker-entrypoint.sh"
-#    ulimits:
-#      memlock:
-#        soft: -1
-#        hard: -1
-#    volumes:
-#      - es02-data05-data:/usr/share/elasticsearch/data
-#      - es-data-repository:/usr/share/elasticsearch/repository
-#    networks:
-#      - elasticsearch-stack
-#    depends_on:
-#      - es01-master01
-#      - es01-master02
-#  es02-data06: # Data Warm
-#    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
-#    container_name: es02-data06
-#    environment:
-#      - node.name=es02-data06
-#      - node.roles=data_warm
-#      - cluster.name=cluster
-#      - discovery.seed_hosts=es01-master01,es01-master02
-#      - cluster.initial_master_nodes=es01-master01,es01-master02
-#      - bootstrap.memory_lock=true
-#      - xpack.ml.enabled=true
-#      - xpack.monitoring.collection.enabled=true
-#      - path.repo=/usr/share/elasticsearch/repository
-#      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-#      - TAKE_FILE_OWNERSHIP=true
-#    entrypoint: >
-#      /bin/sh -c "
-#        sed -i \"s/{data,logs}/{data,logs,repository}/g\" /usr/local/bin/docker-entrypoint.sh
-#        /bin/tini -- /usr/local/bin/docker-entrypoint.sh"
-#    ulimits:
-#      memlock:
-#        soft: -1
-#        hard: -1
-#    volumes:
-#      - es02-data06-data:/usr/share/elasticsearch/data
-#      - es-data-repository:/usr/share/elasticsearch/repository
-#    networks:
-#      - elasticsearch-stack
-#    depends_on:
-#      - es01-master01
-#      - es01-master02
-#  es02-data07: # Data Cold
-#    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
-#    container_name: es02-data07
-#    environment:
-#      - node.name=es02-data07
-#      - node.roles=data_cold
-#      - cluster.name=cluster
-#      - discovery.seed_hosts=es01-master01,es01-master02
-#      - cluster.initial_master_nodes=es01-master01,es01-master02
-#      - bootstrap.memory_lock=true
-#      - xpack.ml.enabled=true
-#      - xpack.monitoring.collection.enabled=true
-#      - path.repo=/usr/share/elasticsearch/repository
-#      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-#      - TAKE_FILE_OWNERSHIP=true
-#    entrypoint: >
-#      /bin/sh -c "
-#        sed -i \"s/{data,logs}/{data,logs,repository}/g\" /usr/local/bin/docker-entrypoint.sh
-#        /bin/tini -- /usr/local/bin/docker-entrypoint.sh"
-#    ulimits:
-#      memlock:
-#        soft: -1
-#        hard: -1
-#    volumes:
-#      - es02-data07-data:/usr/share/elasticsearch/data
-#      - es-data-repository:/usr/share/elasticsearch/repository
-#    networks:
-#      - elasticsearch-stack
-#    depends_on:
-#      - es01-master01
-#      - es01-master02
+  es02-data05: # Data Hot
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
+    container_name: es02-data05
+    environment:
+      - node.name=es02-data05
+      - node.roles=data_hot
+      - cluster.name=cluster
+      - discovery.seed_hosts=es01-master01,es01-master02
+      - cluster.initial_master_nodes=es01-master01,es01-master02
+      - bootstrap.memory_lock=true
+      - xpack.ml.enabled=true
+      - xpack.monitoring.collection.enabled=true
+      - path.repo=/usr/share/elasticsearch/repository
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - TAKE_FILE_OWNERSHIP=true
+    entrypoint: >
+      /bin/sh -c "
+        sed -i \"s/{data,logs}/{data,logs,repository}/g\" /usr/local/bin/docker-entrypoint.sh
+        /bin/tini -- /usr/local/bin/docker-entrypoint.sh"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - es02-data05-data:/usr/share/elasticsearch/data
+      - es-data-repository:/usr/share/elasticsearch/repository
+    networks:
+      - elasticsearch-stack
+    depends_on:
+      - es01-master01
+      - es01-master02
+  es02-data06: # Data Warm
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
+    container_name: es02-data06
+    environment:
+      - node.name=es02-data06
+      - node.roles=data_warm
+      - cluster.name=cluster
+      - discovery.seed_hosts=es01-master01,es01-master02
+      - cluster.initial_master_nodes=es01-master01,es01-master02
+      - bootstrap.memory_lock=true
+      - xpack.ml.enabled=true
+      - xpack.monitoring.collection.enabled=true
+      - path.repo=/usr/share/elasticsearch/repository
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - TAKE_FILE_OWNERSHIP=true
+    entrypoint: >
+      /bin/sh -c "
+        sed -i \"s/{data,logs}/{data,logs,repository}/g\" /usr/local/bin/docker-entrypoint.sh
+        /bin/tini -- /usr/local/bin/docker-entrypoint.sh"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - es02-data06-data:/usr/share/elasticsearch/data
+      - es-data-repository:/usr/share/elasticsearch/repository
+    networks:
+      - elasticsearch-stack
+    depends_on:
+      - es01-master01
+      - es01-master02
+  es02-data07: # Data Cold
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
+    container_name: es02-data07
+    environment:
+      - node.name=es02-data07
+      - node.roles=data_cold
+      - cluster.name=cluster
+      - discovery.seed_hosts=es01-master01,es01-master02
+      - cluster.initial_master_nodes=es01-master01,es01-master02
+      - bootstrap.memory_lock=true
+      - xpack.ml.enabled=true
+      - xpack.monitoring.collection.enabled=true
+      - path.repo=/usr/share/elasticsearch/repository
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - TAKE_FILE_OWNERSHIP=true
+    entrypoint: >
+      /bin/sh -c "
+        sed -i \"s/{data,logs}/{data,logs,repository}/g\" /usr/local/bin/docker-entrypoint.sh
+        /bin/tini -- /usr/local/bin/docker-entrypoint.sh"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - es02-data07-data:/usr/share/elasticsearch/data
+      - es-data-repository:/usr/share/elasticsearch/repository
+    networks:
+      - elasticsearch-stack
+    depends_on:
+      - es01-master01
+      - es01-master02
 ####################################################################
 #
 # E N D
@@ -389,12 +389,39 @@ services:
 # Combined
 #
 ####################################################################
-  es04-combined01: # Transform, ML, Remote Cluster Client, Master, Voting Only, Ingest
+#  es04-combined01: # Transform, ML, Remote Cluster Client, Master, Voting Only, Ingest
+#    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
+#    container_name: es04-combined01
+#    environment:
+#      - node.name=es04-combined01
+#      - node.roles=transform,ml,remote_cluster_client,master,voting_only,ingest
+#      - cluster.name=cluster
+#      - discovery.seed_hosts=es01-master01,es01-master02
+#      - cluster.initial_master_nodes=es01-master01,es01-master02
+#      - bootstrap.memory_lock=true
+#      - xpack.ml.enabled=true
+#      - xpack.monitoring.collection.enabled=true
+#      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+#    ulimits:
+#      memlock:
+#        soft: -1
+#        hard: -1
+#    networks:
+#      - elasticsearch-stack
+#    depends_on:
+#      - es01-master01
+#      - es01-master02
+####################################################################
+#
+# Separated
+#
+####################################################################
+  es04-transform01: # Transform & Remote Cluster Client
     image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
-    container_name: es04-combined01
+    container_name: es04-transform01
     environment:
-      - node.name=es04-combined01
-      - node.roles=transform,ml,remote_cluster_client,master,voting_only,ingest
+      - node.name=es04-transform01
+      - node.roles=transform,remote_cluster_client
       - cluster.name=cluster
       - discovery.seed_hosts=es01-master01,es01-master02
       - cluster.initial_master_nodes=es01-master01,es01-master02
@@ -411,121 +438,94 @@ services:
     depends_on:
       - es01-master01
       - es01-master02
-####################################################################
-#
-# Separated
-#
-####################################################################
-#  es04-transform01: # Transform & Remote Cluster Client
-#    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
-#    container_name: es04-transform01
-#    environment:
-#      - node.name=es04-transform01
-#      - node.roles=transform,remote_cluster_client
-#      - cluster.name=cluster
-#      - discovery.seed_hosts=es01-master01,es01-master02
-#      - cluster.initial_master_nodes=es01-master01,es01-master02
-#      - bootstrap.memory_lock=true
-#      - xpack.ml.enabled=true
-#      - xpack.monitoring.collection.enabled=true
-#      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-#    ulimits:
-#      memlock:
-#        soft: -1
-#        hard: -1
-#    networks:
-#      - elasticsearch-stack
-#    depends_on:
-#      - es01-master01
-#      - es01-master02
-#  es05-ml01: # Machine Learning & Remote Cluster Client
-#    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
-#    container_name: es05-ml01
-#    environment:
-#      - node.name=es05-ml01
-#      - node.roles=ml,remote_cluster_client
-#      - cluster.name=cluster
-#      - discovery.seed_hosts=es01-master01,es01-master02
-#      - cluster.initial_master_nodes=es01-master01,es01-master02
-#      - bootstrap.memory_lock=true
-#      - xpack.ml.enabled=true
-#      - xpack.monitoring.collection.enabled=true
-#      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-#    ulimits:
-#      memlock:
-#        soft: -1
-#        hard: -1
-#    networks:
-#      - elasticsearch-stack
-#    depends_on:
-#      - es01-master01
-#      - es01-master02
-#  es06-voting01: # Voting Only
-#    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
-#    container_name: es06-voting01
-#    environment:
-#      - node.name=es06-voting01
-#      - node.roles=master,voting_only
-#      - cluster.name=cluster
-#      - discovery.seed_hosts=es01-master01,es01-master02
-#      - cluster.initial_master_nodes=es01-master01,es01-master02
-#      - bootstrap.memory_lock=true
-#      - xpack.ml.enabled=true
-#      - xpack.monitoring.collection.enabled=true
-#      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-#    ulimits:
-#      memlock:
-#        soft: -1
-#        hard: -1
-#    networks:
-#      - elasticsearch-stack
-#    depends_on:
-#      - es01-master01
-#      - es01-master02
-#  es07-ingest01: # Ingest
-#    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
-#    container_name: es07-ingest01
-#    environment:
-#      - node.name=es07-ingest01
-#      - node.roles=ingest
-#      - cluster.name=cluster
-#      - discovery.seed_hosts=es01-master01,es01-master02
-#      - cluster.initial_master_nodes=es01-master01,es01-master02
-#      - bootstrap.memory_lock=true
-#      - xpack.ml.enabled=true
-#      - xpack.monitoring.collection.enabled=true
-#      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-#    ulimits:
-#      memlock:
-#        soft: -1
-#        hard: -1
-#    networks:
-#      - elasticsearch-stack
-#    depends_on:
-#      - es01-master01
-#      - es01-master02
-#  es08-remote01: # Remote Cluster Client
-#    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
-#    container_name: es08-remote01
-#    environment:
-#      - node.name=es08-remote01
-#      - node.roles=remote_cluster_client
-#      - cluster.name=cluster
-#      - discovery.seed_hosts=es01-master01,es01-master02
-#      - cluster.initial_master_nodes=es01-master01,es01-master02
-#      - bootstrap.memory_lock=true
-#      - xpack.ml.enabled=true
-#      - xpack.monitoring.collection.enabled=true
-#      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-#    ulimits:
-#      memlock:
-#        soft: -1
-#        hard: -1
-#    networks:
-#      - elasticsearch-stack
-#    depends_on:
-#      - es01-master01
-#      - es01-master02
+  es05-ml01: # Machine Learning & Remote Cluster Client
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
+    container_name: es05-ml01
+    environment:
+      - node.name=es05-ml01
+      - node.roles=ml,remote_cluster_client
+      - cluster.name=cluster
+      - discovery.seed_hosts=es01-master01,es01-master02
+      - cluster.initial_master_nodes=es01-master01,es01-master02
+      - bootstrap.memory_lock=true
+      - xpack.ml.enabled=true
+      - xpack.monitoring.collection.enabled=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      - elasticsearch-stack
+    depends_on:
+      - es01-master01
+      - es01-master02
+  es06-voting01: # Voting Only
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
+    container_name: es06-voting01
+    environment:
+      - node.name=es06-voting01
+      - node.roles=master,voting_only
+      - cluster.name=cluster
+      - discovery.seed_hosts=es01-master01,es01-master02
+      - cluster.initial_master_nodes=es01-master01,es01-master02
+      - bootstrap.memory_lock=true
+      - xpack.ml.enabled=true
+      - xpack.monitoring.collection.enabled=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      - elasticsearch-stack
+    depends_on:
+      - es01-master01
+      - es01-master02
+  es07-ingest01: # Ingest
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
+    container_name: es07-ingest01
+    environment:
+      - node.name=es07-ingest01
+      - node.roles=ingest
+      - cluster.name=cluster
+      - discovery.seed_hosts=es01-master01,es01-master02
+      - cluster.initial_master_nodes=es01-master01,es01-master02
+      - bootstrap.memory_lock=true
+      - xpack.ml.enabled=true
+      - xpack.monitoring.collection.enabled=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      - elasticsearch-stack
+    depends_on:
+      - es01-master01
+      - es01-master02
+  es08-remote01: # Remote Cluster Client
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
+    container_name: es08-remote01
+    environment:
+      - node.name=es08-remote01
+      - node.roles=remote_cluster_client
+      - cluster.name=cluster
+      - discovery.seed_hosts=es01-master01,es01-master02
+      - cluster.initial_master_nodes=es01-master01,es01-master02
+      - bootstrap.memory_lock=true
+      - xpack.ml.enabled=true
+      - xpack.monitoring.collection.enabled=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      - elasticsearch-stack
+    depends_on:
+      - es01-master01
+      - es01-master02
 ####################################################################
 #
 # E N D
