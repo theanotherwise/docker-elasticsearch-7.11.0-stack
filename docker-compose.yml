@@ -14,6 +14,16 @@ services:
       - "5601:5601"
     depends_on:
       - es03-coo02
+  es-set-defaults:
+    image: alpine:3.13.1
+    container_name: es-set-defaults
+    build:
+      context: ./es-set-defaults
+    networks:
+      - elasticsearch-stack
+    depends_on:
+      - es01-master01
+      - es01-master02
   es01-master01: # Master
     image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
     container_name: es01-master01
@@ -26,11 +36,20 @@ services:
       - bootstrap.memory_lock=true
       - xpack.ml.enabled=true
       - xpack.monitoring.collection.enabled=true
+      - path.repo=/usr/share/elasticsearch/repository
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - TAKE_FILE_OWNERSHIP=true
+    entrypoint: >
+      /bin/sh -c "
+        sed -i \"s/{data,logs}/{data,logs,repository}/g\" /usr/local/bin/docker-entrypoint.sh
+        /bin/tini -- /usr/local/bin/docker-entrypoint.sh"
     ulimits:
       memlock:
         soft: -1
         hard: -1
+    volumes:
+      - es01-master01-data:/usr/share/elasticsearch/data
+      - es-data-repository:/usr/share/elasticsearch/repository
     networks:
       - elasticsearch-stack
   es01-master02: # Master
@@ -45,11 +64,20 @@ services:
       - bootstrap.memory_lock=true
       - xpack.ml.enabled=true
       - xpack.monitoring.collection.enabled=true
+      - path.repo=/usr/share/elasticsearch/repository
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - TAKE_FILE_OWNERSHIP=true
+    entrypoint: >
+      /bin/sh -c "
+        sed -i \"s/{data,logs}/{data,logs,repository}/g\" /usr/local/bin/docker-entrypoint.sh
+        /bin/tini -- /usr/local/bin/docker-entrypoint.sh"
     ulimits:
       memlock:
         soft: -1
         hard: -1
+    volumes:
+      - es01-master02-data:/usr/share/elasticsearch/data
+      - es-data-repository:/usr/share/elasticsearch/repository
     networks:
       - elasticsearch-stack
   es02-data01: # Data
@@ -64,11 +92,20 @@ services:
       - bootstrap.memory_lock=true
       - xpack.ml.enabled=true
       - xpack.monitoring.collection.enabled=true
+      - path.repo=/usr/share/elasticsearch/repository
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - TAKE_FILE_OWNERSHIP=true
+    entrypoint: >
+      /bin/sh -c "
+        sed -i \"s/{data,logs}/{data,logs,repository}/g\" /usr/local/bin/docker-entrypoint.sh
+        /bin/tini -- /usr/local/bin/docker-entrypoint.sh"
     ulimits:
       memlock:
         soft: -1
         hard: -1
+    volumes:
+      - es02-data01-data:/usr/share/elasticsearch/data
+      - es-data-repository:/usr/share/elasticsearch/repository
     networks:
       - elasticsearch-stack
     depends_on:
@@ -86,21 +123,41 @@ services:
       - bootstrap.memory_lock=true
       - xpack.ml.enabled=true
       - xpack.monitoring.collection.enabled=true
+      - path.repo=/usr/share/elasticsearch/repository
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - TAKE_FILE_OWNERSHIP=true
+    entrypoint: >
+      /bin/sh -c "
+        sed -i \"s/{data,logs}/{data,logs,repository}/g\" /usr/local/bin/docker-entrypoint.sh
+        /bin/tini -- /usr/local/bin/docker-entrypoint.sh"
     ulimits:
       memlock:
         soft: -1
         hard: -1
+    volumes:
+      - es02-data02-data:/usr/share/elasticsearch/data
+      - es-data-repository:/usr/share/elasticsearch/repository
     networks:
       - elasticsearch-stack
     depends_on:
       - es01-master01
       - es01-master02
-  es02-data03: # Data Content, Data Hot, Data Warm, Data Cold
+####################################################################
+#
+# B E G I N
+#
+# Nodes: Data Content, Data Hot, Data Warm, Data Cold
+#
+####################################################################
+#
+# C O M B I N E D
+#
+####################################################################
+  es02-combined02: # Data Content, Data Hot, Data Warm, Data Cold
     image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
-    container_name: es02-data03
+    container_name: es02-combined02
     environment:
-      - node.name=es02-data03
+      - node.name=es02-combined02
       - node.roles=data_content,data_hot,data_warm,data_cold
       - cluster.name=cluster
       - discovery.seed_hosts=es01-master01,es01-master02
@@ -108,16 +165,161 @@ services:
       - bootstrap.memory_lock=true
       - xpack.ml.enabled=true
       - xpack.monitoring.collection.enabled=true
+      - path.repo=/usr/share/elasticsearch/repository
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - TAKE_FILE_OWNERSHIP=true
+    entrypoint: >
+      /bin/sh -c "
+        sed -i \"s/{data,logs}/{data,logs,repository}/g\" /usr/local/bin/docker-entrypoint.sh
+        /bin/tini -- /usr/local/bin/docker-entrypoint.sh"
     ulimits:
       memlock:
         soft: -1
         hard: -1
+    volumes:
+      - es02-combined02-data:/usr/share/elasticsearch/data
+      - es-data-repository:/usr/share/elasticsearch/repository
     networks:
       - elasticsearch-stack
     depends_on:
       - es01-master01
       - es01-master02
+####################################################################
+#
+# S E P A R A T E D
+#
+####################################################################
+#  es02-data04: # Data Content
+#    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
+#    container_name: es02-data04
+#    environment:
+#      - node.name=es02-data04
+#      - node.roles=data_content
+#      - cluster.name=cluster
+#      - discovery.seed_hosts=es01-master01,es01-master02
+#      - cluster.initial_master_nodes=es01-master01,es01-master02
+#      - bootstrap.memory_lock=true
+#      - xpack.ml.enabled=true
+#      - xpack.monitoring.collection.enabled=true
+#      - path.repo=/usr/share/elasticsearch/repository
+#      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+#      - TAKE_FILE_OWNERSHIP=true
+#    entrypoint: >
+#      /bin/sh -c "
+#        sed -i \"s/{data,logs}/{data,logs,repository}/g\" /usr/local/bin/docker-entrypoint.sh
+#        /bin/tini -- /usr/local/bin/docker-entrypoint.sh"
+#    ulimits:
+#      memlock:
+#        soft: -1
+#        hard: -1
+#    volumes:
+#      - es02-data04-data:/usr/share/elasticsearch/data
+#      - es-data-repository:/usr/share/elasticsearch/repository
+#    networks:
+#      - elasticsearch-stack
+#    depends_on:
+#      - es01-master01
+#      - es01-master02
+#  es02-data05: # Data Hot
+#    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
+#    container_name: es02-data05
+#    environment:
+#      - node.name=es02-data05
+#      - node.roles=data_hot
+#      - cluster.name=cluster
+#      - discovery.seed_hosts=es01-master01,es01-master02
+#      - cluster.initial_master_nodes=es01-master01,es01-master02
+#      - bootstrap.memory_lock=true
+#      - xpack.ml.enabled=true
+#      - xpack.monitoring.collection.enabled=true
+#      - path.repo=/usr/share/elasticsearch/repository
+#      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+#      - TAKE_FILE_OWNERSHIP=true
+#    entrypoint: >
+#      /bin/sh -c "
+#        sed -i \"s/{data,logs}/{data,logs,repository}/g\" /usr/local/bin/docker-entrypoint.sh
+#        /bin/tini -- /usr/local/bin/docker-entrypoint.sh"
+#    ulimits:
+#      memlock:
+#        soft: -1
+#        hard: -1
+#    volumes:
+#      - es02-data05-data:/usr/share/elasticsearch/data
+#      - es-data-repository:/usr/share/elasticsearch/repository
+#    networks:
+#      - elasticsearch-stack
+#    depends_on:
+#      - es01-master01
+#      - es01-master02
+#  es02-data06: # Data Warm
+#    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
+#    container_name: es02-data06
+#    environment:
+#      - node.name=es02-data06
+#      - node.roles=data_warm
+#      - cluster.name=cluster
+#      - discovery.seed_hosts=es01-master01,es01-master02
+#      - cluster.initial_master_nodes=es01-master01,es01-master02
+#      - bootstrap.memory_lock=true
+#      - xpack.ml.enabled=true
+#      - xpack.monitoring.collection.enabled=true
+#      - path.repo=/usr/share/elasticsearch/repository
+#      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+#      - TAKE_FILE_OWNERSHIP=true
+#    entrypoint: >
+#      /bin/sh -c "
+#        sed -i \"s/{data,logs}/{data,logs,repository}/g\" /usr/local/bin/docker-entrypoint.sh
+#        /bin/tini -- /usr/local/bin/docker-entrypoint.sh"
+#    ulimits:
+#      memlock:
+#        soft: -1
+#        hard: -1
+#    volumes:
+#      - es02-data06-data:/usr/share/elasticsearch/data
+#      - es-data-repository:/usr/share/elasticsearch/repository
+#    networks:
+#      - elasticsearch-stack
+#    depends_on:
+#      - es01-master01
+#      - es01-master02
+#  es02-data07: # Data Cold
+#    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
+#    container_name: es02-data07
+#    environment:
+#      - node.name=es02-data07
+#      - node.roles=data_cold
+#      - cluster.name=cluster
+#      - discovery.seed_hosts=es01-master01,es01-master02
+#      - cluster.initial_master_nodes=es01-master01,es01-master02
+#      - bootstrap.memory_lock=true
+#      - xpack.ml.enabled=true
+#      - xpack.monitoring.collection.enabled=true
+#      - path.repo=/usr/share/elasticsearch/repository
+#      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+#      - TAKE_FILE_OWNERSHIP=true
+#    entrypoint: >
+#      /bin/sh -c "
+#        sed -i \"s/{data,logs}/{data,logs,repository}/g\" /usr/local/bin/docker-entrypoint.sh
+#        /bin/tini -- /usr/local/bin/docker-entrypoint.sh"
+#    ulimits:
+#      memlock:
+#        soft: -1
+#        hard: -1
+#    volumes:
+#      - es02-data07-data:/usr/share/elasticsearch/data
+#      - es-data-repository:/usr/share/elasticsearch/repository
+#    networks:
+#      - elasticsearch-stack
+#    depends_on:
+#      - es01-master01
+#      - es01-master02
+####################################################################
+#
+# E N D
+#
+# Nodes: Data Content, Data Hot, Data Warm, Data Cold
+#
+####################################################################
   es03-coo01: # Coordinating Only for Indexer
     image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
     container_name: es03-coo01
@@ -176,6 +378,17 @@ services:
     depends_on:
       - es01-master01
       - es01-master02
+####################################################################
+#
+# B E G I N
+#
+# Nodes: Transform, ML, Remote Cluster Client, Master+Voting Only, Ingest
+#
+####################################################################
+#
+# Combined
+#
+####################################################################
   es04-combined01: # Transform, ML, Remote Cluster Client, Master, Voting Only, Ingest
     image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
     container_name: es04-combined01
@@ -198,6 +411,11 @@ services:
     depends_on:
       - es01-master01
       - es01-master02
+####################################################################
+#
+# Separated
+#
+####################################################################
 #  es04-transform01: # Transform & Remote Cluster Client
 #    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
 #    container_name: es04-transform01
@@ -308,6 +526,13 @@ services:
 #    depends_on:
 #      - es01-master01
 #      - es01-master02
+####################################################################
+#
+# E N D
+#
+# Nodes: Transform, ML, Remote Cluster Client, Master+Voting Only, Ingest
+#
+####################################################################
   httpd01:
     image: httpd:2.4.43
     container_name: httpd01
@@ -317,7 +542,7 @@ services:
     networks:
       - elasticsearch-stack
     ports:
-      - "80:80"
+      - "8080:80"
   ab01:
     image: docker.elastic.co/beats/auditbeat:7.11.0
     container_name: ab01
@@ -418,6 +643,7 @@ services:
     depends_on:
       - kafka01
       - es03-coo01
+      - es-set-defaults
   apm01:
     image: docker.elastic.co/apm/apm-server:7.11.0
     container_name: apm01
@@ -426,14 +652,21 @@ services:
     volumes:
       - ./files/apm-server/apm-server.yml:/usr/share/apm-server/apm-server.yml:ro
   fastapi01:
-    image: python:3.9.1-alpine
     container_name: fastapi01
     build:
       context: ./fastapi01
     networks:
       - elasticsearch-stack
     ports:
-      - "8080:8080"
+      - "8081:8080"
+  fastapi02:
+    container_name: fastapi02
+    build:
+      context: ./fastapi02
+    networks:
+      - elasticsearch-stack
+    ports:
+      - "8082:8080"
 networks:
   elasticsearch-stack:
     ipam:
@@ -441,3 +674,13 @@ networks:
         - subnet: 172.20.15.0/24
 volumes:
   httpd01-volume:
+  es-data-repository:
+  es01-master01-data:
+  es01-master02-data:
+  es02-data01-data:
+  es02-data02-data:
+  es02-combined02-data:
+  es02-data04-data:
+  es02-data05-data:
+  es02-data06-data:
+  es02-data07-data:

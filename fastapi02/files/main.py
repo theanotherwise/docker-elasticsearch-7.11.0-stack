@@ -3,7 +3,7 @@ from elasticapm.contrib.starlette import make_apm_client, ElasticAPM
 
 apm = make_apm_client({
     'SERVER_URL': 'http://apm01:8200',
-    'SERVICE_NAME': 'fastapi01',
+    'SERVICE_NAME': 'fastapi02',
     'SERVER_TIMEOUT': '5s',
     'ENABLED': 'true',
     'LOG_LEVEL': 'trace',
@@ -16,4 +16,4 @@ app.add_middleware(ElasticAPM, client=apm)
 
 @app.get("/")
 def read_root():
-    return "fastapi01"
+    return "fastapi02"
