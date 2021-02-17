@@ -316,6 +316,8 @@ services:
       - ./files/httpd/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
     networks:
       - elasticsearch-stack
+    ports:
+      - "80:80"
   ab01:
     image: docker.elastic.co/beats/auditbeat:7.11.0
     container_name: ab01
