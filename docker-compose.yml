@@ -8,8 +8,6 @@ services:
       SERVER_NAME: kibana
       SERVER_HOST: kibana
       ELASTICSEARCH_HOSTS: '["http://es03-coo02:9200"]'
-    networks:
-      - elasticsearch-stack
     ports:
       - "5601:5601"
     depends_on:
@@ -19,8 +17,6 @@ services:
     container_name: es-set-defaults
     build:
       context: ./es-set-defaults
-    networks:
-      - elasticsearch-stack
     depends_on:
       - es01-master01
       - es01-master02
@@ -50,8 +46,6 @@ services:
     volumes:
       - es01-master01-data:/usr/share/elasticsearch/data
       - es-data-repository:/usr/share/elasticsearch/repository
-    networks:
-      - elasticsearch-stack
   es01-master02: # Master
     image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
     container_name: es01-master02
@@ -78,8 +72,6 @@ services:
     volumes:
       - es01-master02-data:/usr/share/elasticsearch/data
       - es-data-repository:/usr/share/elasticsearch/repository
-    networks:
-      - elasticsearch-stack
   es02-data01: # Data
     image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
     container_name: es02-data01
@@ -106,8 +98,6 @@ services:
     volumes:
       - es02-data01-data:/usr/share/elasticsearch/data
       - es-data-repository:/usr/share/elasticsearch/repository
-    networks:
-      - elasticsearch-stack
     depends_on:
       - es01-master01
       - es01-master02
@@ -137,8 +127,6 @@ services:
     volumes:
       - es02-data02-data:/usr/share/elasticsearch/data
       - es-data-repository:/usr/share/elasticsearch/repository
-    networks:
-      - elasticsearch-stack
     depends_on:
       - es01-master01
       - es01-master02
@@ -179,8 +167,6 @@ services:
 #    volumes:
 #      - es02-combined02-data:/usr/share/elasticsearch/data
 #      - es-data-repository:/usr/share/elasticsearch/repository
-#    networks:
-#      - elasticsearch-stack
 #    depends_on:
 #      - es01-master01
 #      - es01-master02
@@ -215,8 +201,6 @@ services:
     volumes:
       - es02-data04-data:/usr/share/elasticsearch/data
       - es-data-repository:/usr/share/elasticsearch/repository
-    networks:
-      - elasticsearch-stack
     depends_on:
       - es01-master01
       - es01-master02
@@ -246,8 +230,6 @@ services:
     volumes:
       - es02-data05-data:/usr/share/elasticsearch/data
       - es-data-repository:/usr/share/elasticsearch/repository
-    networks:
-      - elasticsearch-stack
     depends_on:
       - es01-master01
       - es01-master02
@@ -277,8 +259,6 @@ services:
     volumes:
       - es02-data06-data:/usr/share/elasticsearch/data
       - es-data-repository:/usr/share/elasticsearch/repository
-    networks:
-      - elasticsearch-stack
     depends_on:
       - es01-master01
       - es01-master02
@@ -308,8 +288,6 @@ services:
     volumes:
       - es02-data07-data:/usr/share/elasticsearch/data
       - es-data-repository:/usr/share/elasticsearch/repository
-    networks:
-      - elasticsearch-stack
     depends_on:
       - es01-master01
       - es01-master02
@@ -344,8 +322,6 @@ services:
       memlock:
         soft: -1
         hard: -1
-    networks:
-      - elasticsearch-stack
     depends_on:
       - es01-master01
       - es01-master02
@@ -373,8 +349,6 @@ services:
       memlock:
         soft: -1
         hard: -1
-    networks:
-      - elasticsearch-stack
     depends_on:
       - es01-master01
       - es01-master02
@@ -406,8 +380,6 @@ services:
 #      memlock:
 #        soft: -1
 #        hard: -1
-#    networks:
-#      - elasticsearch-stack
 #    depends_on:
 #      - es01-master01
 #      - es01-master02
@@ -433,8 +405,6 @@ services:
       memlock:
         soft: -1
         hard: -1
-    networks:
-      - elasticsearch-stack
     depends_on:
       - es01-master01
       - es01-master02
@@ -455,8 +425,6 @@ services:
       memlock:
         soft: -1
         hard: -1
-    networks:
-      - elasticsearch-stack
     depends_on:
       - es01-master01
       - es01-master02
@@ -477,8 +445,6 @@ services:
       memlock:
         soft: -1
         hard: -1
-    networks:
-      - elasticsearch-stack
     depends_on:
       - es01-master01
       - es01-master02
@@ -499,8 +465,6 @@ services:
       memlock:
         soft: -1
         hard: -1
-    networks:
-      - elasticsearch-stack
     depends_on:
       - es01-master01
       - es01-master02
@@ -521,8 +485,6 @@ services:
       memlock:
         soft: -1
         hard: -1
-    networks:
-      - elasticsearch-stack
     depends_on:
       - es01-master01
       - es01-master02
@@ -539,8 +501,6 @@ services:
     volumes:
       - httpd01-volume:/var/log/apache2
       - ./files/httpd/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
-    networks:
-      - elasticsearch-stack
     ports:
       - "8080:80"
   ab01:
@@ -549,8 +509,6 @@ services:
     volumes:
       - ./files/auditbeat/auditbeat.yml:/usr/share/auditbeat/auditbeat.yml:ro
     command: [ "--strict.perms=false" ]
-    networks:
-      - elasticsearch-stack
     depends_on:
       - ls01-shipper
   mb01:
@@ -559,8 +517,6 @@ services:
     volumes:
       - ./files/metricbeat/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml:ro
     command: [ "--strict.perms=false" ]
-    networks:
-      - elasticsearch-stack
     depends_on:
       - ls01-shipper
   pb01:
@@ -571,8 +527,6 @@ services:
     command: [ "--strict.perms=false"]
     cap_add:
       - NET_ADMIN
-    networks:
-      - elasticsearch-stack
     depends_on:
       - ls01-shipper
   fb01:
@@ -582,8 +536,6 @@ services:
       - ./files/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
       - httpd01-volume:/var/log/apache2:ro
     command: ["--strict.perms=false"]
-    networks:
-      - elasticsearch-stack
     depends_on:
       - httpd01
       - ls01-shipper
@@ -591,8 +543,6 @@ services:
     image: docker.elastic.co/beats/heartbeat:7.11.0
     container_name: hb01
     command: ["--strict.perms=false"]
-    networks:
-      - elasticsearch-stack
     volumes:
       - ./files/heartbeat/heartbeat.yml:/usr/share/heartbeat/heartbeat.yml:ro
     depends_on:
@@ -600,8 +550,6 @@ services:
   ls01-shipper:
     image: docker.elastic.co/logstash/logstash:7.11.0
     container_name: ls01-shipper
-    networks:
-      - elasticsearch-stack
     volumes:
       - ./files/logstash-shipper/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
       - ./files/logstash-shipper/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
@@ -613,8 +561,6 @@ services:
     environment:
       MYID: 1
       SERVERS: zoo01
-    networks:
-      - elasticsearch-stack
   kafka01:
     image: wurstmeister/kafka:2.13-2.7.0
     container_name: kafka01
@@ -628,15 +574,11 @@ services:
       KAFKA_LOG_RETENTION_BYTES: "10240000"
       KAFKA_ZOOKEEPER_CONNECT: zoo01:2181
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
-    networks:
-      - elasticsearch-stack
     depends_on:
       - zoo01
   ls01-indexer:
     image: docker.elastic.co/logstash/logstash:7.11.0
     container_name: ls01-indexer
-    networks:
-      - elasticsearch-stack
     volumes:
       - ./files/logstash-indexer/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
       - ./files/logstash-indexer/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
@@ -647,31 +589,21 @@ services:
   apm01:
     image: docker.elastic.co/apm/apm-server:7.11.0
     container_name: apm01
-    networks:
-      - elasticsearch-stack
     volumes:
       - ./files/apm-server/apm-server.yml:/usr/share/apm-server/apm-server.yml:ro
   fastapi01:
     container_name: fastapi01
     build:
       context: ./fastapi01
-    networks:
-      - elasticsearch-stack
     ports:
       - "8081:8080"
   fastapi02:
     container_name: fastapi02
     build:
       context: ./fastapi02
-    networks:
-      - elasticsearch-stack
     ports:
       - "8082:8080"
-networks:
-  elasticsearch-stack:
-    ipam:
-      config:
-        - subnet: 172.20.15.0/24
+
 volumes:
   httpd01-volume:
   es-data-repository:
