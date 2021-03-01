@@ -4,10 +4,8 @@ services:
   kibana:
     image: docker.elastic.co/kibana/kibana:7.11.0
     container_name: kibana
-    environment:
-      SERVER_NAME: kibana
-      SERVER_HOST: kibana
-      ELASTICSEARCH_HOSTS: '["http://es03-coo02:9200"]'
+    volumes:
+      - ./files/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
     ports:
       - "5601:5601"
     depends_on:
